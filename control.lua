@@ -146,29 +146,28 @@ end
 -- ==================================================================================================
 -- player.force.print(entity_id)
 
-function on_tick_chests(endpoints)
-  for index,entity in ipairs(endpoints) do 
-    if entity ~= nil then
-      if entity.valid then
-        local inv = entity.get_inventory(defines.inventory.chest)
+function on_tick_chests(chests)
+  for index,chest in ipairs(chests) do
+    if chest ~= nil then
+      if chest.valid then
+        local inv = chest.get_inventory(defines.inventory.chest)
         if inv then
           local requested_items = {}
-          if entity.request_slot_count > 0 then 
-            for i = 1,entity.request_slot_count do
-              local slot = entity.get_request_slot(i)
-              if slot then          
-                put(entity.surface,inv,slot['name'],slot['count'])
+          if chest.request_slot_count > 0 then
+            for i = 1,chest.request_slot_count do
+              local slot = chest.get_request_slot(i)
+              if slot then
+                put(chest.surface,inv,slot['name'],slot['count'])
                 requested_items[slot['name']] = true
               end
             end
           end
-              
+
           for item,amount in pairs(inv.get_contents()) do
             if requested_items[item] == nil then
-              take(entity.surface,inv,item,amount)
+              take(chest.surface,inv,item,amount)
             end
           end
-          
         end
       end
     end
@@ -211,16 +210,7 @@ end
 -- ==================================================================================================
 
 function on_tick(event)  
-  for surface_name,_ in pairs(global.endpoints) do
-    endpoint = table.remove(global.endpoints[surface_name],1)
-    if endpoint ~= nil then
-      if endpoint.valid then
-        table.insert(global.endpoints[surface_name],endpoint)
-      end
-    end
-    -- print(surface_name .. " endpoints "..tostring(#global.endpoints[surface_name]))
-    on_tick_chests(global.endpoints[surface_name])
-  end
+  on_tick_chests(global.chests)
 
   for surface_name,_ in pairs(global.combinators) do
     for _,combinator in pairs(global.combinators[surface_name]) do

@@ -51,11 +51,10 @@ function print(line) game.players[1].force.print(line) end
 function create_variables(player)
 
   if not global.pool then global.pool = {} end
-  if not global.endpoints then global.endpoints = {} end
+  if not global.chests then global.chests = {} end
   if not global.combinators then global.combinators = {} end
   
   if not global.pool[player.surface.name] then global.pool[player.surface.name] = {} end
-  if not global.endpoints[player.surface.name] then global.endpoints[player.surface.name] = {} end
   if not global.combinators[player.surface.name] then global.combinators[player.surface.name] = {} end
 
   
@@ -166,7 +165,7 @@ function entity_add(entity)
   if entity then
     if entity.valid then
       if entity.name == 'QuantumResourceDistributionContainer' then
-        table.insert(global.endpoints[entity.surface.name],entity)
+        table.insert(global.chests,entity)
       end
       
       if entity.name == 'QuantumResourceDistributionCombinator' then
@@ -183,9 +182,9 @@ function entity_del(entity)
     local surface_name = entity.surface.name
   
     if entity.name == 'QuantumResourceDistributionContainer' then
-      for index,endpoint in ipairs(global.endpoints[surface_name]) do
-        if entity == endpoint then
-          table.remove(global.endpoints[surface_name], index)
+      for index,chest in ipairs(global.chests) do
+        if entity == chest then
+          table.remove(global.chests, index)
           return
         end
       end
