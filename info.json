@@ -1,0 +1,11 @@
+{
+  "name": "QuantumResourceDistribution2",
+  "version": "2.5.1",
+  "factorio_version": "1.1",
+  "title": "Quantum Resource Distribution 2",
+  "description": "Special chest can send placed items to ship quantum storage unit and retrieve from it. Also works for player inventory (optional). It's make resource management more like RTS for playing combat-oriented settings/mods. Compatible with multi-surface mods like Space Exploration - item transportation works on surface, but not between them. Should be UPS-friendly because using events to track entities, not find_entities_filtered.",
+  "author": "Eliont",
+  "dependencies": [
+    "base >= 1.1"
+  ]
+}
