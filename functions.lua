@@ -55,7 +55,6 @@ function create_variables(player)
   if not global.combinators then global.combinators = {} end
   
   if not global.pool[player.surface.name] then global.pool[player.surface.name] = {} end
-  if not global.combinators[player.surface.name] then global.combinators[player.surface.name] = {} end
 
   
   for k1,v1 in pairs(global.pool) do
@@ -169,7 +168,7 @@ function entity_add(entity)
       end
       
       if entity.name == 'QuantumResourceDistributionCombinator' then
-        table.insert(global.combinators[entity.surface.name],entity)
+        table.insert(global.combinators,entity)
       end      
       
     end
@@ -191,9 +190,9 @@ function entity_del(entity)
     end
     
     if entity.name == 'QuantumResourceDistributionCombinator' then
-      for index,combinator in ipairs(global.combinators[surface_name]) do
+      for index,combinator in ipairs(global.combinators) do
         if entity == combinator then
-          table.remove(global.combinators[surface_name], index)
+          table.remove(global.combinators, index)
           return
         end
       end

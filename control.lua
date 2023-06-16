@@ -212,12 +212,10 @@ end
 function on_tick(event)  
   on_tick_chests(global.chests)
 
-  for surface_name,_ in pairs(global.combinators) do
-    for _,combinator in pairs(global.combinators[surface_name]) do
-      if combinator ~= nil then
-        if combinator.valid then
-          set_combinator(combinator)
-        end
+  for i,combinator in pairs(global.combinators) do
+    if combinator ~= nil then
+      if combinator.valid then
+        set_combinator(combinator)
       end
     end
   end
