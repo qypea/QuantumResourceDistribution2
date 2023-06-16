@@ -274,20 +274,20 @@ function on_tick(event)
         on_tick_logistic_inventory(player)
       end
     end
-  end
 
-  -- Update combinators every time
-  for i,combinator in pairs(global.combinators) do
-    if combinator ~= nil then
-      if combinator.valid then
-        set_combinator(combinator)
+    -- Update combinators every nth tick
+    for i,combinator in pairs(global.combinators) do
+      if combinator ~= nil then
+        if combinator.valid then
+          set_combinator(combinator)
+        end
       end
     end
-  end
 
-  -- Update gui every time
-  for _,player in pairs(game.players) do
-    update_gui(player)
+    -- Update gui every nth tick
+    for _,player in pairs(game.players) do
+      update_gui(player)
+    end
   end
 end
 
