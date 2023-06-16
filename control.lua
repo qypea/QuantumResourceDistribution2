@@ -146,7 +146,7 @@ end
 -- ==================================================================================================
 -- player.force.print(entity_id)
 
-function on_tick_chests(player,endpoints)
+function on_tick_chests(endpoints)
   for index,entity in ipairs(endpoints) do 
     if entity ~= nil then
       if entity.valid then
@@ -228,7 +228,7 @@ function on_tick(event)
         end
       end
       -- print(surface_name .. " endpoints "..tostring(#global.endpoints[surface_name]))
-      on_tick_chests(player,global.endpoints[surface_name])
+      on_tick_chests(global.endpoints[surface_name])
     end
     
     for surface_name,_ in pairs(global.combinators) do
