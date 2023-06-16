@@ -257,9 +257,25 @@ end
 
 -- ==================================================================================================
 
-function on_tick(event)  
+function on_tick(event)
+  if global.ticks == nil then
+    global.ticks = 0
+  end
+  global.ticks = global.ticks + 1
+
+  -- Update chests every time
   on_tick_chests()
 
+  -- Update player inventories if nth tick
+  if global.ticks % settings.startup["QuantumResourceDistribution_tick"].value == 0 then
+    for _,player in pairs(game.players) do
+      if player.mod_settings["QuantumResourceDistribution_logistic_inventory"].value then
+        on_tick_logistic_inventory(player)
+      end
+    end
+  end
+
+  -- Update combinators every time
   for i,combinator in pairs(global.combinators) do
     if combinator ~= nil then
       if combinator.valid then
@@ -268,22 +284,15 @@ function on_tick(event)
     end
   end
 
-  for _,player in pairs(game.players) do    
-    -- sb(player.get_personal_logistic_slot(2))
-    -- sb(player.get_main_inventory().get_contents())
-    -- player.force.character_inventory_slots_bonus = 100
-    
-    if player.mod_settings["QuantumResourceDistribution_logistic_inventory"].value then
-      on_tick_logistic_inventory(player)
-    end
-   
+  -- Update gui every time
+  for _,player in pairs(game.players) do
     update_gui(player)
-  end  
+  end
 end
 
 -- ==================================================================================================
 
-script.on_nth_tick(settings.startup["QuantumResourceDistribution_tick"].value, on_tick)      
+script.on_nth_tick(1, on_tick)
 script.on_configuration_changed(update_mod_button)
 script.on_event(defines.events.on_player_created, on_player_created)
 script.on_event(defines.events.on_player_joined_game, on_player_created)
