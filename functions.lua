@@ -165,6 +165,7 @@ function entity_add(entity)
     if entity.valid then
       if entity.name == 'QuantumResourceDistributionContainer' then
         table.insert(global.chests,entity)
+        global.chest_stride = #global.chests / settings.startup["QuantumResourceDistribution_tick"].value
       end
       
       if entity.name == 'QuantumResourceDistributionCombinator' then
@@ -184,6 +185,7 @@ function entity_del(entity)
       for index,chest in ipairs(global.chests) do
         if entity == chest then
           table.remove(global.chests, index)
+          global.chest_stride = #global.chests / settings.startup["QuantumResourceDistribution_tick"].value
           return
         end
       end

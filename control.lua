@@ -146,32 +146,80 @@ end
 -- ==================================================================================================
 -- player.force.print(entity_id)
 
-function on_tick_chests(chests)
-  for index,chest in ipairs(chests) do
-    if chest ~= nil then
-      if chest.valid then
-        local inv = chest.get_inventory(defines.inventory.chest)
-        if inv then
-          local requested_items = {}
-          if chest.request_slot_count > 0 then
-            for i = 1,chest.request_slot_count do
-              local slot = chest.get_request_slot(i)
-              if slot then
-                put(chest.surface,inv,slot['name'],slot['count'])
-                requested_items[slot['name']] = true
-              end
+
+function on_tick_chest(chest)
+  if chest ~= nil then
+    if chest.valid then
+      local inv = chest.get_inventory(defines.inventory.chest)
+      if inv then
+        local requested_items = {}
+        if chest.request_slot_count > 0 then
+          for i = 1,chest.request_slot_count do
+            local slot = chest.get_request_slot(i)
+            if slot then
+              put(chest.surface,inv,slot['name'],slot['count'])
+              requested_items[slot['name']] = true
             end
           end
+        end
 
-          for item,amount in pairs(inv.get_contents()) do
-            if requested_items[item] == nil then
-              take(chest.surface,inv,item,amount)
-            end
+        for item,amount in pairs(inv.get_contents()) do
+          if requested_items[item] == nil then
+            take(chest.surface,inv,item,amount)
           end
         end
       end
     end
   end
+end
+
+-- ==================================================================================================
+
+function on_tick_chests()
+  -- Initialize variables if needed
+  if global.chests == nil then
+    -- List of all chests
+    -- Set as items are added and removed
+    return
+  end
+  if global.chest_stride == nil then
+    -- How many chests we should process per tick(float)
+    -- Set as chests are added and removed
+    return
+  end
+  if global.chest_offset == nil then
+    -- How far we're allowed to go through the list this tick
+    -- Only set by this function
+    global.chest_offset = 0
+  end
+  global.chest_offset = global.chest_offset + global.chest_stride
+
+
+  if global.chest_index ~= nil and global.chest_index >= global.chest_offset then
+    -- Bail out early if we're already at offset due to rounding float to -- index
+    return
+  end
+
+  peek, _ = next(global.chests, index)
+  if #global.chests > 0 and peek == nil then
+    -- Reset to start of list if we're at the end
+    global.chest_offset = nil
+    global.chest_index = nil
+    on_tick_chests()
+    return
+  end
+
+  while global.chest_index == nil or global.chest_index < global.chest_offset do
+    global.chest_index, chest = next(global.chests, global.chest_index)
+    if global.chest_index == nil then
+      -- At end of list. Start at beginning again
+      global.chest_offset = nil
+      break
+    end
+
+    on_tick_chest(chest)
+  end
+
 end
 
 -- ==================================================================================================
@@ -210,7 +258,7 @@ end
 -- ==================================================================================================
 
 function on_tick(event)  
-  on_tick_chests(global.chests)
+  on_tick_chests()
 
   for i,combinator in pairs(global.combinators) do
     if combinator ~= nil then
