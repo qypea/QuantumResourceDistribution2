@@ -258,6 +258,7 @@ end
 -- ==================================================================================================
 
 function on_tick(event)
+  migrate_data()
   if global.ticks == nil then
     global.ticks = 0
   end

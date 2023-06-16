@@ -126,6 +126,34 @@ function create_gui(e)
 end
       
 -- ==================================================================================================
+
+function migrate_data()
+  -- Migrate chests from table by surface name to flat list
+  if global.endpoints then
+    global.chests = {}
+    for suface_name, chests in pairs(global.endpoints) do
+      for i, chest in ipairs(chests) do
+        table.insert(global.chests, chest)
+      end
+    end
+    global.chest_stride = #global.chests / settings.startup["QuantumResourceDistribution_tick"].value
+    -- print(string.format("Chests: %d, stride: %d", #global.chests, global.chest_stride))
+
+    -- Migrate combinators from table by surface name to flat list
+    flat_combinators = {}
+    for surface_name, combinators in pairs(global.combinators) do
+      for i, combinator in ipairs(combinators) do
+        table.insert(flat_combinators, combinator)
+      end
+    end
+    global.combinators = flat_combinators
+    --print(string.format("Combinator count: %d", #global.combinators))
+
+    global.endpoints = nil
+  end
+end
+
+-- ==================================================================================================
       
 function on_player_created(e)
   local player = game.players[e.player_index]
