@@ -211,6 +211,27 @@ end
 -- ==================================================================================================
 
 function on_tick(event)  
+  for surface_name,_ in pairs(global.endpoints) do
+    endpoint = table.remove(global.endpoints[surface_name],1)
+    if endpoint ~= nil then
+      if endpoint.valid then
+        table.insert(global.endpoints[surface_name],endpoint)
+      end
+    end
+    -- print(surface_name .. " endpoints "..tostring(#global.endpoints[surface_name]))
+    on_tick_chests(global.endpoints[surface_name])
+  end
+
+  for surface_name,_ in pairs(global.combinators) do
+    for _,combinator in pairs(global.combinators[surface_name]) do
+      if combinator ~= nil then
+        if combinator.valid then
+          set_combinator(combinator)
+        end
+      end
+    end
+  end
+
   for _,player in pairs(game.players) do    
     -- sb(player.get_personal_logistic_slot(2))
     -- sb(player.get_main_inventory().get_contents())
@@ -219,28 +240,7 @@ function on_tick(event)
     if player.mod_settings["QuantumResourceDistribution_logistic_inventory"].value then
       on_tick_logistic_inventory(player)
     end
-  
-    for surface_name,_ in pairs(global.endpoints) do
-      endpoint = table.remove(global.endpoints[surface_name],1)
-      if endpoint ~= nil then
-        if endpoint.valid then
-          table.insert(global.endpoints[surface_name],endpoint)
-        end
-      end
-      -- print(surface_name .. " endpoints "..tostring(#global.endpoints[surface_name]))
-      on_tick_chests(global.endpoints[surface_name])
-    end
-    
-    for surface_name,_ in pairs(global.combinators) do
-      for _,combinator in pairs(global.combinators[surface_name]) do
-        if combinator ~= nil then 
-          if combinator.valid then  
-            set_combinator(combinator)
-          end
-        end
-      end
-    end
-    
+   
     update_gui(player)
   end  
 end
