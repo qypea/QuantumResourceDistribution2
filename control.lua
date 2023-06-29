@@ -293,10 +293,24 @@ end
 
 -- ==================================================================================================
 
+function on_destruct(event)
+  local entity = event.entity
+  if entity.name == 'QuantumResourceDistributionContainer' then
+    if entity.request_slot_count > 0 then
+      for i = 1,entity.request_slot_count do
+	entity.clear_request_slot(i)
+      end
+    end
+  end
+end
+
+-- ==================================================================================================
+
 script.on_nth_tick(1, on_tick)
 script.on_configuration_changed(update_mod_button)
 script.on_event(defines.events.on_player_created, on_player_created)
 script.on_event(defines.events.on_player_joined_game, on_player_created)
+script.on_event(defines.events.on_marked_for_deconstruction, on_destruct)
 
 -- ==================================================================================================
 
